@@ -362,7 +362,6 @@ class ChildComponent extends React.Components {
 
 
 
-
 --------------------------------------------------
 
 ps：可以通过组件间的通信方式，利用 `React.createRef` 将node进行传递  
