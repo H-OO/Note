@@ -349,58 +349,30 @@ class ChildComponent extends React.Components {
 ```
 --------------------------------------------------
 
+**生命钩子函数**
 
+* componentWillMount 组件挂载前调用
 
+* componentDidMount 组件挂载完毕后调用
 
+* componentWillUpdate 组件更新前调用
 
+* componentDidUpdate 组件更新后调用
 
-
-
-
-
-
-
-
+* componentWillUnmount 组件销毁前调用
 
 --------------------------------------------------
 
-ps：可以通过组件间的通信方式，利用 `React.createRef` 将node进行传递  
-实现父组件中获取子组件的node，相反在子组件中获取父组件的node
+**Redux**
 
-平行组件间获取node  
-主要思路：将组件的node保存到平行组件的父组件中  
-```javascript
-// parent
-class ParentComponent class React.Components {
-  constructor() {
-    super();
-    this.saveChildNode = this.saveChildNode.bind(this);
-  }
-  saveChildNode(param) {
-    this.childNode = param; // 接收参数保存node
-  }
-  render() {
-    return (
-      <childComponent getNode={this.saveChildNode} />
-    )
-  }
-}
+设计思想：
 
-// child
-class ChildComponent class React.Components {
-  constructor() {
-    super();
-    this.myRef = React.createRef();
-  }
-  render() {
-    this.props.getNode(this.myRef); // 将node作为参数传递
-    return (
-      <div ref={this.myRef}>child</div>
-    )
-  }
-}
-```
-平行的组件通过这种方式，将node保存到父组件中，获取node就相当于子组件访问父组件的内容  
-在父组件中定义好子组件的处理函数，再将处理函数传递进子组件，子组件在需要的时候触发就可以了
+Web应用是一个状态机，视图与状态是一一对应的
+
+所有的状态，保存在一个对象里面
+
+Redux 提供createStore这个函数，用来生成Store
+
+
 
 --------------------------------------------------
