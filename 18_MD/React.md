@@ -363,7 +363,7 @@ class ChildComponent extends React.Components {
 
 --------------------------------------------------
 
-**Redux**
+## Redux
 
 设计思想：
 
@@ -371,8 +371,111 @@ Web应用是一个状态机，视图与状态是一一对应的
 
 所有的状态，保存在一个对象里面
 
+--------------------------------------------------
+
+**Store**
+
 Redux 提供createStore这个函数，用来生成Store
 
+```javascript
+import { createStore } from 'redux';
+const store = createStore(fn);
+```
 
+Store 就是保存数据的地方，你可以把它看成一个容器。整个应用只能有一个 Store
+
+上面代码中，createStore函数接受另一个函数作为参数，返回新生成的 Store 对象
+
+--------------------------------------------------
+
+**State**
+
+Store对象包含所有数据。如果想得到某个时点的数据，就要对 Store 生成快照
+
+这种时点的数据集合，就叫做 State
+
+当前时刻的 State，可以通过store.getState()拿到
+
+```javascript
+import { createStore } from 'redux';
+const store = createStore(fn);
+const state = store.getState();
+```
+Redux 规定， 一个 State 对应一个 View
+
+只要 State 相同，View 就相同。
+
+--------------------------------------------------
+
+**Action**
+
+State 的变化，会导致 View 的变化。
+
+用户接触不到 State，只能接触到 View。
+
+所以，State 的变化必须是 View 导致的。
+
+Action 就是 View 发出的通知，表示 State 应该要发生变化了。
+
+Action 是一个对象。type属性是必须的，表示 Action 的名称。其他属性可以自由设置。
+
+```javascript
+const action = {
+  type: 'ADD_TODO',
+  payload: 'Learn Redux'
+};
+```
+Action 的名称是ADD_TODO，它携带的信息是字符串Learn Redux。
+
+可以这样理解，Action 描述当前发生的事情。改变 State 的唯一办法，就是使用 Action。
+
+它会运送数据到 Store。
+
+--------------------------------------------------
+
+**store.dispatch()**
+
+store.dispatch()是 View 发出 Action 的唯一方法。
+
+```javascript
+import { createStore } from 'redux';
+const store = createStore(fn);
+
+store.dispatch({
+  type: 'ADD_TODO',
+  payload: 'Learn Redux'
+});
+```
+上面代码中，store.dispatch接受一个 Action 对象作为参数，将它发送出去。
+
+--------------------------------------------------
+
+**Reducer**
+
+Store 收到 Action 以后，必须给出一个新的 State，这样 View 才会发生变化。
+
+这种 State 的计算过程就叫做 Reducer。
+
+Reducer 是一个函数，它接受 Action 和当前 State 作为参数，返回一个新的 State。
+
+```javascript
+const reducer = function (state, action) {
+  // ...
+  return new_state;
+};
+```
+
+实际应用中，store.dispatch方法会触发 Reducer 的自动执行
+
+做法就是在生成 Store 的时候，将 Reducer 传入createStore方法
+
+```javascript
+import { createStore } from 'redux';
+const store = createStore(reducer);
+```
+
+上面代码中，createStore接受 Reducer 作为参数，生成一个新的 Store。
+
+以后每当store.dispatch发送过来一个新的 Action，就会自动调用 Reducer，得到新的 State。
 
 --------------------------------------------------
