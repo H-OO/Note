@@ -17,9 +17,9 @@ react-router-dom @4.2.2
 * NavLink ★
 * Prompt ★
 * Redirect ★
-* Route
-* Router
-* StaticRouter
+* Route ★
+* Router [通用版路由]
+* StaticRouter [用于服务器端渲染场景]
 * Switch
 * matchPath
 * withRouter
@@ -135,7 +135,7 @@ true：表示新的 URL 将会覆盖 History 中的当前值，而不是向其�
 默认为 false，跳转链接就往 History 中添加一个新的 URL
 
 ```js
-<Link to="/courses" replace />
+<Link to='/courses' replace />
 ```
 
 【 innerRef 】[func]
@@ -161,7 +161,7 @@ const refCallback = node => {
 
 ```js
 import { NavLink } from 'react-router-dom';
-<NavLink to="/about">About</NavLink>;
+<NavLink to='/about'>About</NavLink>;
 ```
 
 【 activeClassName 】[string]
@@ -183,7 +183,7 @@ const activeStyle = {
   fontWeight: 'bold',
   color: 'red'
 };
-<NavLink to="/faq" activeStyle={activeStyle}>
+<NavLink to='/faq' activeStyle={activeStyle}>
   FAQs
 </NavLink>;
 ```
@@ -193,7 +193,7 @@ const activeStyle = {
 只有在路由地址完全匹配时才应用激活样式类名/内嵌样式
 
 ```js
-<NavLink exact to="/profile">
+<NavLink exact to='/profile'>
   Profile
 </NavLink>
 ```
@@ -244,7 +244,7 @@ import { Prompt } from 'react-router-dom';
 
 <Prompt
   when={formIsHalfFilledOut}
-  message="你确定要离开当前页面吗？"
+  message='你确定要离开当前页面吗？'
 />
 ```
 
@@ -268,14 +268,14 @@ false不允许路由跳转，无提示框
 // func
 <Prompt when={true} message={
   location => {
-    const msg = "你确定要离开当前页面吗？";
+    const msg = '你确定要离开当前页面吗？';
     // 当msg为bool，无提示框，true|false会控制是否跳转路由
     // 根据需求决定
     return msg;
   }
 } />
 // string
-<Prompt when={true} message="你确定要离开当前页面吗？" />
+<Prompt when={true} message='你确定要离开当前页面吗？' />
 ```
 ---
 
@@ -283,3 +283,169 @@ false不允许路由跳转，无提示框
 
 路由重定向，新的 URL 将会覆盖 History 中的当前值
 
+```js
+import {Route, Redirect} from 'react-router-dom';
+import Login from './components/Login/Login/js'; // Login组件
+// 路由重定向至登录页
+<Redirect to='/login' />
+<Route path='/login' component={Login}>
+```
+
+【 to 】[string|object]
+
+```js
+// 字符串形式
+<Redirect to='/login' />
+// 对象形式 (可携带自定义状态)
+<Redirect to={{
+  pathname: '/login',
+  search: '?user=xxx',
+  state: {}
+}} />
+```
+
+【 push 】[bool]
+
+重定向是否将新的位置推入历史记录，而不是替换当前值
+
+【 from 】[string]
+
+只能再 Switch 组件下配合使用
+
+```js
+// 将前往 /personal 的路由重定向 到 /login
+<Switch>
+  <Redirect from='/personal' to='/login' />
+</Switch>
+```
+
+【 exact 】[bool]
+
+完全匹配
+
+【 strict 】[bool]
+
+严格匹配
+
+与Switch组件配合，能实现用户登录登出操作的路由重定向跳转
+
+```js
+// 根据登录状态进行判断 假设 loginState 能获取当前登录状态 默认为false
+import { Switch, Redirect } from 'react-router-dom';
+// 当 loginState 状态改变，并且回馈给了组件，现在为true
+// 实现功能：用户登录后跳转首页，用户登出后跳转登录页
+<Switch>
+  {loginState && <Redirect from='/login' to='/home' />}
+  {!loginState && <Redirect from='/personal' to='/login' />}
+</Switch>
+```
+
+Switch组件后面将会介绍，不要方
+
+---
+
+**Route**
+
+```js
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+<Router>
+  <div>
+    <Route exact path='/' component={Home} />
+    <Route path='/news' component={News} />
+  </div>
+</Router>
+```
+
+使用<Route>渲染一些内容有以下三种方式：  
+* <Route component> 
+* <Route render>
+* <Route children>
+
+三种渲染方式都将提供相同的三个路由属性  
+* match
+* location
+* history
+
+【 component 】[React元素]
+
+component属性接收Home组件，路由为'/'就渲染Home组件
+
+```js
+<Route path='/' component={Home} />
+```
+
+【 render 】[func]
+
+render属性接收一个函数，由该函数返回结果进行渲染
+```js
+// 内联渲染
+<Route path='/home' render={() => <div>Home</div>} />
+```
+
+【 children 】[func]
+
+无论 path 是否匹配位置都会渲染
+
+path不匹配match为null
+
+此处待续!!!
+
+【 path 】[string]
+
+```js
+<link to='/goods/1' />Goods</Link>
+<Route path='/goods/:id' component={Goods} />
+```
+:id 将id作为 match.params的key  
+点击跳转后传入值为1  
+Goods组件中 this.props.match.params 为 {id: 1}
+
+【 exact 】[bool]
+
+完全匹配
+
+【strict】[bool]
+
+严格匹配
+
+【 sensitive 】[bool]
+
+匹配路径是否区分大小写
+
+---
+
+**Router**
+
+低阶通用版 Router 组件
+
+其他高阶 Router 组件
+* BrowserRouter
+* HashRouter
+* MemoryRouter
+* NativeRouter
+* StaticRouter
+
+---
+
+**Switch**
+
+渲染与路径匹配的第一个子<Route> 或 <Redirect>
+
+<Switch>只会渲染一个路由
+
+---
+
+**withRouter**
+
+访问 history 对象
+
+---
+
+**函数中进行路由跳转**
+
+需要使用高阶组件 BrowserRouter  
+访问 history，使用push方法，参数为路由地址  
+```js
+this.props.history.push('/')
+```
+---
