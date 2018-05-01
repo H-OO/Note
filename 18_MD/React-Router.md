@@ -357,9 +357,9 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 ```
 
 使用<Route>渲染一些内容有以下三种方式：  
-* <Route component> 
-* <Route render>
-* <Route children>
+* component
+* render
+* children
 
 三种渲染方式都将提供相同的三个路由属性  
 * match
@@ -404,7 +404,7 @@ Goods组件中 this.props.match.params 为 {id: 1}
 
 完全匹配
 
-【strict】[bool]
+【 strict 】[bool]
 
 严格匹配
 
