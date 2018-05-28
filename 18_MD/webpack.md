@@ -4,20 +4,15 @@
 
 PS:此文档仅适用于webpack4.x以上版本
 
------------------------------------------------------------------
 
 **指令**
-
+---
 * `webpack` // 让 webpack 默认以根目录下的 webpack.config.js 文件来运行
-
 * `webpack --config [config.js]` // --config 是让 webpack 使用某个配置文件来运行，忽略 webpack.config.js 文件的配置
-
 * `webpack --mode [production|development]` // 4.0新特性 --mode 是让webpack知道当前处于生产环境还是开发环境，生产环境会自动压缩代码
 
------------------------------------------------------------------
-
 **Loader**
-
+---
 作用：让 webpack 具有打包除 js 以外的其他文件的能力
 
 本质：对使用 import 和 require 命令引入的资源进行对应的 loader 加工处理再输出
@@ -26,7 +21,7 @@ PS:此文档仅适用于webpack4.x以上版本
 
 以 CSS 文件和图片为例
 
-```javascript
+```js
 // webpack.config.js
 module.exports = {
   module: {
@@ -61,13 +56,11 @@ import img from './xxx.png'; // 引入图片
 * `clean-webpack-plugin` 清理输出文件夹中不相关文件
 * `html-webpack-plugin` 生成 html 文件
 
------------------------------------------------------------------
-
 **使用模板生成HTML文件并自动载入CSS和JS**
-
+---
 注意：处理图片的路径需要 `html-loader`
 
-```javascript
+```js
 // 安装 html-loader html-webpack-plugin
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
@@ -108,11 +101,10 @@ module.exports = {
   }
 };
 ```
------------------------------------------------------------------
 
 **清理dist目录下的不相关文件**
-
-```javascript
+---
+```js
 // webpack.config.js
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
@@ -121,16 +113,15 @@ module.exports = {
   ]
 };
 ```
------------------------------------------------------------------
 
 **使用第三方包**
-
+---
 所有的第三方包必须遵循ES6模块写法：  
 需以`export default`或`export`进行输出  
 通过`import`进行引入使用
 
 说明一下`export default`跟`export`的用法区别  
-```javascript
+```js
 // test.js
 
 // 方式1： export default 默认输出
@@ -150,20 +141,17 @@ console.log(obj, arr); // {} []
 import {obj} from 'test.js'; // 部分引入
 console.log(obj); // {}
 ```
------------------------------------------------------------------
 
 **file-loader与url-loader**
-
+---
 file-loader 和 url-loader 可以接收并加载任何文件，例如图片、字体等；然后将其输出到构建目录
 
 file-loader和url-loader的关系：url-loader中包含有file-loader，是对file-loader进行封装
 
------------------------------------------------------------------
-
 **加载图片**
-
+---
 小图片转Base64减少HTTP请求
-```javascript
+```js
 module.exports = {
   module: {
     rules: [
@@ -183,11 +171,9 @@ module.exports = {
 ```
 文件大小大于limit，url-loader会调用file-loader进行处理，参数也会直接传给file-loader
 
------------------------------------------------------------------
-
 **加载字体**
-
-```javascript
+---
+```js
 module.exports = {
   module: {
     rules: [
@@ -199,20 +185,17 @@ module.exports = {
   }
 };
 ```
------------------------------------------------------------------
 
 **devtool**
-
+---
 作用：在使用打包后文件的某一行代码时，可以追溯打包前所在源代码的位置
 
 注意：只在开发环境下使用
 
 常用选项：`devtool: 'source-map'`
 
------------------------------------------------------------------
-
 **mode**
-
+---
 webpack4 的新特性
 
 作用：指定当前环境，自动设置全局环境变量
@@ -227,9 +210,8 @@ module.exports = {
 };
 ```
 
------------------------------------------------------------------
-
 **观察模式**
+---
 
 作用：观察文件改动，自动执行编译
 
@@ -237,15 +219,13 @@ module.exports = {
 
 缺点：浏览器需要手动重新加载
 
------------------------------------------------------------------
-
 **webpack-dev-server**
-
+---
 作用：提供web服务，自动执行编译，并实现浏览器自动重新加载
 
 使用：先安装`webpack-dev-server`，再修改配置文件
 
-```javascript
+```js
 // webpack.config.js
 module.exports = {
   // web服务
@@ -256,10 +236,9 @@ module.exports = {
   }
 };
 ```
------------------------------------------------------------------
 
 **模块热替换**
-
+---
 HMR(Hot Module Replacement) 是webpack的内置插件
 
 作用：当项目体积较大时，只更新变更内容，无需全部编译，以节省宝贵的开发时间
@@ -281,7 +260,7 @@ HMR解决了改动某个模块就要全部模块进行重新编译的耗时等�
 对于修改HTML文件不进行热替换的问题，...若有修改到就手动刷新浏览器即可，毕竟HMR解决了关键的耗时问题
 
 开启HMR
-```javascript
+```js
 // webpack.config.js
 const webpack = require('webpack');
 module.exports = {
@@ -311,16 +290,15 @@ export default function module1() {
   console.log(content);
 }
 ```
------------------------------------------------------------------
 
 **添加一个公共模块**
-
+---
 目的：方法共享，同时在使用该模块时，未引用的代码会被webpack标记
 
 生产环境下 `--mode production` 或 `mode: 'production'`，会删除标记的未引用代码
 
 格式如下：
-```javascript
+```js
 // math.js
 export function first() {
   // todosomething...
@@ -332,17 +310,16 @@ export function second() {
 // use
 import {first} from './math.js'; // 引入first
 ```
------------------------------------------------------------------
 
 **生产环境构建-配置**
-
+---
 开发环境和生产环境的构建目标差异很大，可以独立去写每个环境的webpack配置
 
 但仍要遵循不重复原则，保留一个通用配置，然后将配置不同点与相同点进行合并
 
 安装 `npm install --save-dev webpack-merge`
 
-```javascript
+```js
 // webpack.common.js
 module.exports = {
   entry: {},
@@ -364,22 +341,21 @@ module.exports = merge(common, {
 
 注意：webpack4 加入 `mode` 这一新特性，通过 `devlopment|production` 选项会执行最优的默认配置
 
------------------------------------------------------------------
 
 **生产环境构建-指定环境**
-
+---
 可以通过参数指定 `--config [production|development]`
 
 访问`process.env.NODE_ENV`变量可获取当前环境
 
------------------------------------------------------------------
 
 **抽离CSS**
+---
 
 安装 `extract-text-webpack-plugin` 插件
 
 使用
-```javascript
+```js
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // 单实例
 module.exports = {
@@ -420,16 +396,16 @@ module.exports = {
   }
 };
 ```
------------------------------------------------------------------
 
 **postcss-loader**
+---
 
 作用：样式自动添加浏览器前缀
 
 注意：postcss.config.js是必须的
 
 使用
-```javascript
+```js
 // postcss.config.js
 module.exports = {
   plugins: [
@@ -462,15 +438,15 @@ module.exports = {
 }
 
 ```
------------------------------------------------------------------
 
 **抽离第三方包**
+---
 
 注意：webpack4.0版本废除了CommonsChunkPlugin
 
 新的抽离方法使用 `optimization.splitChunks.cacheGroups`
 
-```javascript
+```js
 // webpack.config.js
 // example
 module.exports = {
@@ -500,9 +476,9 @@ module.exports = {
   }
 };
 ```
------------------------------------------------------------------
 
 **ES6转ES5**
+---
 
 问题：webpack无法对ES6的语法进行转换，ES6语法可能存在浏览器兼容问题
 
@@ -519,7 +495,7 @@ babel-loader的作用正是实现对使用了ES6语法的.js文件进行处理
 babel的转码规则有：`babel-preset-es2015、babel-preset-latest、babel-preset-env`  
 官方推荐使用 `babel-preset-env`
 
-```javascript
+```js
 // webpack.config.js
 module.exports = {
   module: {
@@ -539,9 +515,9 @@ module.exports = {
 };
 ```
 
------------------------------------------------------------------
 
 ### 指南
+---
 
 目标：从零搭建webpack进行模块化开发
 
@@ -555,7 +531,7 @@ module.exports = {
 * 安装plugins `clean-webpack-plugin html-webpack-plugin extract-text-webpack-plugin`
 
 **基本目录**
-
+---
 ```
 |-dist(输出文件夹)
 |-src(源代码)
@@ -565,8 +541,8 @@ module.exports = {
 ```
 
 **单页配置**
-
-```javascript
+---
+```js
 // webpack.config.js
 const path = require('path');
 const webpack = require('webpack');
@@ -739,7 +715,7 @@ src目录结构
       |-News.js
 ```
 
-```javascript
+```js
 // webpack.config.js
 const path = require('path');
 const webpack = require('webpack');
@@ -868,10 +844,8 @@ module.exports = {
 
 ```
 
------------------------------------------------------------------
-
 **CSS Modules**
-
+---
 ```
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const extractCSS = new ExtractTextPlugin('[name]/[name].[hash:5].css'); // 分离
@@ -892,10 +866,9 @@ const extractCSS = new ExtractTextPlugin('[name]/[name].[hash:5].css'); // 分�
 ```
 注意：只能用于Vue模板语法或JSX语法，普通html文件无法进行hash值替换
 
------------------------------------------------------------------
 
 **html-loader通过标识符替换字符串模板**
-
+---
 ```
 {
   test: /\.html$/,
@@ -919,13 +892,12 @@ module.exports = {
 // 编译后 ↓↓
 <div data-attr="xxx"></div>
 ```
------------------------------------------------------------------
 
 ### 多页应用测试版
-
+---
 不适用于多人协作开发
 
-```javascript
+```js
 const path = require('path');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -1056,15 +1028,13 @@ module.exports = {
 };
 ```
 
------------------------------------------------------------------
-
 ### 多页应用生产版
-
+---
 |- webpack.moduleConfig.js // 模块注册
 |- webpack.venderLocal.js // 非npm安装的第三方包路径
 |- webpack.config.js // 根据moduleConfig.js和venderLocal.js进行动态配置
 
-```javascript
+```js
 // webpack.moduleConfig.js
 /**
  * 模块配置文件
@@ -1082,7 +1052,7 @@ const moduleConfig = {
 module.exports = moduleConfig;
 ```
 
-```javascript
+```js
 // webpack.venderLocal.js
 /**
  * 本地第三方资源，非npm安装
@@ -1097,7 +1067,7 @@ const venderLocal = {
 module.exports = venderLocal;
 ```
 
-```javascript
+```js
 // webpack.config.js 【用于生产阶段】
 const path = require('path');
 const webpack = require('webpack');
@@ -1266,10 +1236,9 @@ for (let item in venderLocal) {
 
 module.exports = webpackConfig;
 ```
------------------------------------------------------------------
 
 ### 多页应用终极版 180417
-
+---
 作用：通过配置运行环境变量，启用webpack构建功能
 
 |- webpack.env.js // 获取当前运行环境
@@ -1278,7 +1247,7 @@ module.exports = webpackConfig;
 |- webpack.config.js // 配置文件，根据moduleConfig.js和venderLocal.js进行动态配置
 
 `webpack.env.js` ↓↓
-```javascript
+```js
 /**
  * 用于控制当前webpack使用的使用环境
  * @param development 开发环境 指令npm run start
@@ -1288,7 +1257,7 @@ module.exports = 'development'; // development | production
 ```
 
 `webpack.moduleConfig.js` ↓↓
-```javascript
+```js
 /**
  * 模块配置文件
  * @param chunks 注意有些非npm安装的第三方包需要注册别名
@@ -1305,7 +1274,7 @@ module.exports = config;
 ```
 
 `webpack.venderLocal.js` ↓↓
-```javascript
+```js
 /**
  * 本地第三方资源，非npm安装
  * path.resolve(__dirname, 'src/lib/xx.js')
@@ -1319,7 +1288,7 @@ module.exports = venderLocal;
 ```
 
 `webpack.config.js` ↓↓
-```javascript
+```js
 const path = require('path');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -1512,4 +1481,15 @@ for (let item in venderLocal) {
 module.exports = webpackConfig;
 
 ```
------------------------------------------------------------------
+
+**安装模块遇到的问题**
+---
+```
+npm install 模块安装问题
+Module build failed: Error: `sass-loader` requires `node-sass` >=4. Please install a compatible version.
+查看 package.json 发现 "node-sass": "^4.8.3" 是能被兼容的版本
+解决方案：
+1.移除整个 node_modules 文件夹
+2.运行命令清除缓存 npm cache clear --force
+3.重新安装 npm install
+```
