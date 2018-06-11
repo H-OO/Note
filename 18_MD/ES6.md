@@ -897,3 +897,28 @@ console.log(res.next()); // {value: 2, done: false}
 console.log(res.next()); // {value: 3, done: false}
 console.log(res.next()); // {value: undefined, done: true}
 ```
+
+**class**
+---
+类相当于实例的原型，所有在类中的方法都会被实例继承  
+静态方法 使用static关键字标记，表示该方法不能被实例继承，只能通过类进行调用  
+ES6 规定 class 内部只有静态方法， 没有静态属性
+```JS
+/****************_静态方法_****************/
+class Test {
+  static handler() {}
+}
+/****************_父类静态方法给子类继承_****************/
+class P {
+  static handler() {
+    console.log('_P_');
+  }
+}
+class C extends P {
+  // 重名覆盖
+  static handler() {
+    console.log('_C_');
+  }
+}
+C.handler(); // _C_
+```
