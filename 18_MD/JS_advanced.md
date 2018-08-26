@@ -195,8 +195,9 @@ console.log(example.__proto__); // 实例访问其原型对象
 **布尔操作符**
 ---
 * ! 取反
-* && 找假 true && false => false
-* || 找真 false && true => true
+* !! 快速转换成布尔值
+* && 找假 例如：true && false => false
+* || 找真 例如：false || true => true
 
 **相等操作符**
 ---
@@ -284,6 +285,7 @@ API
 * every 遍历数组，判断所有元素是否满足同一条件，返回 Bool
 * filter 遍历数组，返回满足条件的元素组成的数组
 * forEach 遍历数组，无返回值
+* includes 判断数组中是否包含指定值，返回 Bool
 * indexOf 正向获取元素下标
 * join 转成以其参数进行分割的字符串
 * lastIndexOf 反向获取元素下标
@@ -324,13 +326,13 @@ In -↓-↑- Out
 const arr = [2, 1, 3, 0, 4];
 
 // 冒泡排序
-function bubbleSort (arr) {
-  for (let index = 0, len = arr.length; index < len; index++) {
-    for (let i = index; i < len; i++) { // 优化
-      if (arr[index] > arr[i]) { // 升序 > | 降序 <
-        const tmp = arr[index];
-        arr[index] = arr[i];
-        arr[i] = tmp;
+function bubbleSort(arr) {
+  for (let x = 0, l = arr.length; x < l; x++) {
+    for (let y = x; y < l; y++) { // let y = x (优化)，比较过的元素无需再比
+      if (arr[x] > arr[y]) { // 升序 > | 降序 <
+        const tmp = arr[x];
+        arr[x] = arr[y];
+        arr[y] = tmp;
       }
     }
   }
@@ -398,9 +400,9 @@ API
 * \W 非字母数字下划线
 
 量词
-* \* {0,}
-* \+ {1,}
-* ? {0,1}
+* \* {0,} 可以不出现
+* \+ {1,} 至少出现一次
+* ? {0,1} 不出现或仅出现一次
 
 支持符号
 * . 除换行符以外的其他单个字符
@@ -751,6 +753,8 @@ const a2 = new A();
 console.log(a1.arr === a2.arr); // false
 console.log(a1.sayArr === a2.sayArr); // true
 ```
+优点：函数可复用  
+缺点：B构造函数被调用了两次
 
 **继承-原型式继承**
 ---
@@ -1189,24 +1193,24 @@ async 和 defer 的区别
 * box-sizing: content-box; // content+border+padding（content、border、padding为平级关系）
 * box-sizing: border-box; // content（content中包含了border与padding）
 
+**client**
+---
+* clientWidth padding+content (pc)
+* clientHeight padding+content (pc)
+
 **offset**
 ---
 * offsetLeft 与最近一个有定位的父元素的左侧距离
 * offsetTop 与最近一个有定位的父元素的顶部距离
-* offsetWidth border+padding+content
-* offsetHeight border+padding+content
-
-**client**
----
-* clientWidth padding+content
-* clientHeight padding+content
+* offsetWidth border+padding+content (bpc)
+* offsetHeight border+padding+content (bpc)
 
 **scroll**
 ---
 * scrollLeft 设置目标元素从视口元素左侧移出了多少px（边框不属于视口）
 * scrollTop 设置目标元素从视口元素顶部移出了多少px （边框不属于视口）
-* scrollWidth padding+content
-* scrollHeight padding+content
+* scrollWidth padding+content (pc)
+* scrollHeight padding+content (pc)
 PS: scrollLeft/scrollTop 默认是0（通过父元素进行设置和取值）
 ```js
 // p 为父元素；c 为子元素
@@ -1222,8 +1226,10 @@ console.log(p.scrollTop); // 10
 该方法可接收两个参数：参数1为要获取计算样式的元素，参数2为一个伪元素字符串（例如":after"，可选）  
 PS: CSSStyleDeclaration 对象中的样式属性值为 string 类型，并会携带单位
 ```js
-Element.getComputedStyle(DOM, null); // 获取 DOM 计算样式
-Element.getComputedStyle(DOM, ':after'); // 获取 DOM 伪元素计算样式
+window.getComputedStyle(DOM, null); // 获取 DOM 计算样式  isObj
+window.getComputedStyle(DOM, ':after'); // 获取 DOM 伪元素计算样式  isObj
+// width
+const w = window.getComputedStyle(DOM, null).width; // 0px
 ```
 
 **JS事件机制**
@@ -1233,6 +1239,22 @@ Element.getComputedStyle(DOM, ':after'); // 获取 DOM 伪元素计算样式
 * 目标阶段
 * 冒泡阶段
 
+```js
+// addEventListener
+Element.addEventListener(event, fn, useCapture); // ie9+
+// Element Dom
+// 参数1 事件名 click
+// 参数2 处理函数
+// 参数3 是否在捕获阶段调用处理函数 默认为fasle(冒泡阶段) true(捕获阶段)
+
+// attachEvent
+Element.attachEvent(event, fn); // 低版本ie
+// Element Dom
+// 参数1 事件名 onclick
+// 参数2 处理函数
+// 默认在冒泡阶段调用处理函数
+```
+
 **阻止冒泡**
 ---
 ```js
@@ -1240,11 +1262,11 @@ Element.getComputedStyle(DOM, ':after'); // 获取 DOM 伪元素计算样式
 window.event ? window.event.cancelBubble = true : e.stopPropagation();
 ```
 
-**默认行为**
+**去除默认行为**
 ---
 ```js
 // 兼容写法
-window.event ?  window.event.returnValue = false : e.preventDefault();
+window.event ? window.event.returnValue = false : e.preventDefault();
 ```
 
 **UI事件**
@@ -1381,13 +1403,21 @@ Element.innerHTML = ''; // 再移除子节点树
 ---
 ```js
 const xhr = new XMLHttpRequest(); // 实例化
-xhr.open('get', 'example.txt', true); // 接收三个参数，分别是：请求发生、接口地址，是否异步
+xhr.open('get', 'example.txt', true); // 接收三个参数，分别是：请求方式、接口地址，是否异步
+// xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded'); // 设置请求头
 xhr.send(null); // 请求参数（对部分浏览器为必须项），无参传null
 // 发送请求给服务器...
+xhr.onreadystatechange = function () {
+  if (xhr.readyState === 4 && xhr.status === 200) {
+    // use xhr.responseText todosomething..
+  }
+}
 
+// xhr.close(); // 关闭请求 在组件销毁之前检查是否存在超时的请求，在组件销毁之前关闭请求
 // xhr.abort(); // 接收响应之前，xhr对象会停止触发事件（后续还需解除对xhr对象的引用）
 ```
 收到服务器响应后，响应的数据会自动填充xhr对象的属性，相关属性：
+* readyState 0~4状态
 * responseText 作为响应主体被返回的文本
 * status 响应的HTTP状态（请求响应先检查status属性）
 * statusText HTTP状态的说明
@@ -1525,11 +1555,11 @@ xhr.send(null);
 **进度事件**
 ---
 客户端与服务器通信有关事件
-* loadstart 接收到响应数据的第一个字节时触发
-* progress 接收响应期间持续不断触发
-* error 请求发生错误时触发
-* abort 调用 abort() 方法而终止连接时触发
-* load 完整接收响应数据时触发
+* onabort 调用 abort() 方法而终止连接时触发
+* onerror 请求发生错误时触发
+* onload 完整接收响应数据时触发
+* onloadstart 接收到响应数据的第一个字节时触发
+* onprogress 接收响应期间持续不断触发
 
 **progress事件**
 ---
@@ -1562,7 +1592,15 @@ img.src = ''; // 设置接口路径
 **跨域-JSONP**
 ---
 通过 script 标签的 src 属性进行跨域  
-将回调函数名作为search传递过服务器
+将回调函数名保存在URL中 (?callback=handler) 传递给服务器
+```js
+// 浏览器注册回调函数
+function handler (data) {
+  // use data to do something..
+}
+// 后台返回js文件并加载运行
+handler('相关信息');
+```
 
 **跨域-WebSocket**
 ---
@@ -1587,11 +1625,11 @@ ws.close();
 * ws.CLOSE 3 已经关闭连接
 
 连接生命周期不同阶段触发的事件：
-* open 在成功建立连接时触发
-* error 在发生错误时触发，连续不能持续
-* close 在连接关闭时触发
+* onopen 在成功建立连接时触发
+* onerror 在发生错误时触发，连续不能持续
+* onclose 在连接关闭时触发
 
-close 事件的 event 对象有额外的三个属性：
+onclose 事件的 event 对象有额外的三个属性：
 * wasClean 布尔值，表示连接是否已经关闭
 * code 服务器返回的数值状态码
 * reason 服务器发回的消息
@@ -1666,7 +1704,7 @@ ele.innerHTML = data;
 危害：伪造用户请求进行敏感操作
 
 攻击方式：抓包，获得 token，伪造用户请求  
-防御处理：使用对称加密算法，加密请求参数  
+防御处理：使用非对称加密算法，加密请求参数  
 ```js
 // Multiple-precision.js
 // Barrett-modular-reduction.js
@@ -1675,7 +1713,7 @@ ele.innerHTML = data;
 const rsa_n =
   "C34E069415AC02FC4EA5F45779B7568506713E9210789D527BB89EE462662A1D0E94285E1A764F111D553ADD7C65673161E69298A8BE2212DF8016787E2F4859CD599516880D79EE5130FC5F8B7F69476938557CD3B8A79A612F1DDACCADAA5B6953ECC4716091E7C5E9F045B28004D33548EC89ED5C6B2C64D6C3697C5B9DD3";
 // 服务器端返回的 token
-let token = 'xxxxxxxxxx';F
+let token = 'xxxxxxxxxx';
 // 加密 ↓↓↓
 setMaxDigits(131); //131 => n的十六进制位数/2+3
 const key = new RSAKeyPair("10001", '', rsa_n); // 10001 => e的十六进制
