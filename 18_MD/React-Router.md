@@ -185,7 +185,7 @@ const activeStyle = {
 };
 <NavLink to='/faq' activeStyle={activeStyle}>
   FAQs
-</NavLink>;
+</NavLink>
 ```
 
 【 exact 】[bool]
@@ -214,7 +214,7 @@ http://www.x.com/home/xx
 激活状态的回调函数
 
 ```js
-const isActiveFunc = (macth, location) => {
+const isActiveFunc = (match, location) => {
   // match isObj 成员有path、url、isExact、params
   // location isObj 成员有pathname、hash、search、key、state
 };
