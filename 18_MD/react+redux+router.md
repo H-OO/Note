@@ -317,10 +317,11 @@ const store = createStore(reducer)); // reducer为纯函数，用于计算出最
 **action**
 ---
 用户触发 View(视图) 生成 action(信息对象)  
-必须有 type 属性，用于判断类型
+必须有 type 属性，用于判断类型  
+注意：type 不能重名（属性值规范：组件名_类型）
 ```js
 const action = {
-  type: 'todosomething'
+  type: 'component_todosomething'
 };
 ```
 
@@ -404,7 +405,7 @@ export default TestActionCreater;
 ```js
 // src/reducers/TestReducer.js
 /**
- * 注意：所有 reducer 需要合并后使用
+ * 注意：所有 reducer 需要合并后使用，而且所有的 type 属性必须是唯一的！
  * 在触发 store.dispatch 方法时，自动调用 reducer 方法，返回新的 state
  * @param state 当前时刻状态仓库的快照 （默认值作为初始化对象）
  * @param action 信息对象 dispatch 方法推送过来
@@ -414,7 +415,7 @@ const TestReducer = (state = {
 }, action) => {
   switch (action.type) {
     // 初始化
-    case 'init':
+    case 'xxx_init':
       return {
         payload: action.payload
       }
@@ -475,7 +476,7 @@ class Test extends Component {
     });
     // 初始化
     TestActionCreater({
-      type: 'init',
+      type: 'Test_init',
       payload: '_init_value_'
     })(store.dispatch, store.getState);
   }
