@@ -343,7 +343,7 @@ c. `({type: 'handler', content: 'xxx'})` 对象风格
 * bus.js
 ```javascript
   import Vue from 'vue'
-  export default new Vue
+  export default new Vue()
 ```
 * 平行组件通信
 ```javascript

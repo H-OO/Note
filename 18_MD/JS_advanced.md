@@ -290,18 +290,18 @@ API
 * join 转成以其参数进行分割的字符串
 * lastIndexOf 反向获取元素下标
 * map 遍历数组，将返回的内容用新的空数组进行接收
-* pop 移除数组末项 【原】
-* push 最末端追加全部参数 【原】
+* pop 移除数组末项【原】
+* push 最末端追加全部参数【原】
 * reduce 累加器，数组从左往右累加
 * reduceRight 累加器，数组从右往左累加
-* reverse 反转数组 【原】
-* shift 移除数组首项 【原】
+* reverse 反转数组【原】
+* shift 移除数组首项【原】
 * slice 切割数组
-* splice 切割或拼接替换数组 【原】
-* sort 数组升序或降序
+* splice 切割或拼接替换数组【原】
+* sort 数组升序或降序【原】
 * some 遍历数组，检测是否有元素满足条件，返回 Bool
 * toString 转成以逗号分割的字符串
-* unshift 最前端追加全部参数 【原】
+* unshift 最前端追加全部参数【原】
 * valueOf 返回自身
 
 **栈**
@@ -686,6 +686,7 @@ function Person (name) {
   o.sayName = function () {
     console.log(name);
   }
+  return o;
 }
 const p = Person('YY'); // 不使用 new
 ```
