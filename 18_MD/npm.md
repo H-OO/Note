@@ -93,3 +93,8 @@ console.log('Link success..');
 
 - 包目录下 `sudo npm unlink`
 - `cd /usr/local/bin/` -> `sudo rm dev`
+
+
+## **win 全局安装的模块路径**
+
+`C:\Users\Administrator\AppData\Roaming\npm\node_modules`
