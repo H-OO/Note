@@ -3,7 +3,9 @@
 **认识标签属性**
 
 - `playsinline` 浏览器视窗内全屏 isBool
-- `poster` 视频封面 isStr
+- `poster` 视频封面 isStr (多数安卓手机存在兼容问题，只显示为黑屏)
+- `crossorigin` 允许跨域视频源 (解决画布污染的安全策略问题)
+- `controls` 控制条
 
 **`object-fit`该样式的做用是指定替换元素的内容应该如何适应到其使用的高度和宽度**
 
@@ -18,6 +20,8 @@
   webkit-playsinline="true"
   playsinline="true"
   poster="test.png"
+  crossorigin
+  controls
 ></video>
 ```
 
